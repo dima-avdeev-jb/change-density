@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.unit.*
@@ -37,26 +38,22 @@ fun main() = application {
 }
 
 @Composable
-@Preview
 fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
-    val focusRequester = FocusRequester()
+    val density: Density = LocalDensity.current
+    val doubleDensity = Density(density.density * 2)
 
-    MaterialTheme {
-        Row {
-            Button(modifier = Modifier.focusable(false), onClick = {
-                text = "Hello, Desktop!"
-            }) {
-                Text(text)
-            }
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                modifier = Modifier.focusRequester(focusRequester).onFocusChanged {
-                    println("$it -- hasFocus: ${it.hasFocus} -- isFocused: ${it.isFocused}")
-                    if (!it.isFocused) focusRequester.requestFocus()
-                })
+    Column {
+        Box100()
+        Spacer(Modifier.height(20.dp))
+        CompositionLocalProvider(
+            LocalDensity provides doubleDensity
+        ) {
+            Box100()
         }
-
     }
+}
+
+@Composable
+fun Box100() {
+    Box(Modifier.size(100.dp).background(Color.Blue))
 }
